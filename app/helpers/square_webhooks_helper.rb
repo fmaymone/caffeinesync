@@ -1,0 +1,2 @@
+module SquareWebhooksHelper
+end

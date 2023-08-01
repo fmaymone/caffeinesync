@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # spec/support/square_client_helper.rb
 require 'square'
 

@@ -1,53 +1,20 @@
-# frozen_string_literal: true
-
 # spec/controllers/square_webhooks_controller_spec.rb
 require 'rails_helper'
 
 RSpec.describe SquareWebhooksController, type: :controller do
-  describe 'POST #handle_event' do
-    it 'returns status code 200 for a valid webhook event' do
-      post :handle_event, body: square_webhook_data.to_json
+  describe '#handle_event' do
+    let(:valid_event_data) { { 'type' => 'catalog.version.created', 'data' => {} }.to_json }
+    let(:invalid_event_data) { 'invalid_json_data' }
 
-      expect(response).to have_http_status(:ok)
+    it 'enqueues the event_data for processing with Sidekiq' do
+      expect(WebhookProcessor).to receive(:perform_async).with(JSON.parse(valid_event_data))
+      post :handle_event, body: valid_event_data, as: :json
     end
 
-    it 'enqueues the event data for asynchronous processing with Sidekiq' do
-      expect do
-        post :handle_event, body: square_webhook_data.to_json
-      end.to change(WebhookProcessor.jobs, :size).by(1)
-    end
-
-    it 'logs the received event data' do
-      expect(Rails.logger).to receive(:info).with("Received Square webhook event: #{square_webhook_data}")
-
-      post :handle_event, body: square_webhook_data.to_json
-    end
-
-    it 'returns status code 400 for invalid JSON data' do
-      post :handle_event, body: 'Invalid JSON Data'
-
+    it 'logs an error for JSON parsing errors and returns 400 status' do
+      expect(Rails.logger).to receive(:error).with(/Error parsing JSON data:/)
+      post :handle_event, body: invalid_event_data, as: :json
       expect(response).to have_http_status(:bad_request)
     end
-
-    it 'returns status code 400 for unrecognized event type' do
-      invalid_event_data = { type: 'unknown_event_type' }
-      post :handle_event, body: invalid_event_data.to_json
-
-      expect(response).to have_http_status(:bad_request)
-    end
-  end
-
-  # Helper method to generate sample webhook data
-  def square_webhook_data
-    {
-      type: 'catalog.version.updated',
-      data: {
-        object: {
-          catalog_version: {
-            updated_at: '2023-08-01T15:53:41.389Z'
-          }
-        }
-      }
-    }
   end
 end

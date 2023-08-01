@@ -9,7 +9,6 @@ class SquareWebhooksController < ApplicationController
 
     # Log the event data to your Rails server log
     Rails.logger.info "Received Square webhook event: #{event_data}"
-
     # Enqueue the event_data for asynchronous processing with Sidekiq
     WebhookProcessor.perform_async(event_data)
 

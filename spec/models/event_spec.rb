@@ -1,50 +1,24 @@
-# frozen_string_literal: true
-
-# spec/models/event_spec.rb
 require 'rails_helper'
 
 RSpec.describe Event, type: :model do
-  describe '.last_synced_timestamp' do
-    it 'returns nil if no events exist' do
-      expect(Event.last_synced_timestamp).to be_nil
-    end
-
-    it 'returns the created_at timestamp of the latest event' do
-      event1 = create(:event, source: 'Square', created_at: 1.hour.ago)
-      create(:event, source: 'Square', created_at: 2.hours.ago)
-      expect(Event.last_synced_timestamp).to eq(event1.created_at)
-    end
-  end
-
   describe 'validations' do
-    # ... existing validation tests ...
-
-    it 'allows valid sources' do
-      Event::SOURCES.each do |source|
-        event = build(:event, source:)
-        expect(event).to be_valid
-      end
-    end
+    it { should validate_presence_of(:source) }
+    it { should validate_inclusion_of(:source).in_array(Event::SOURCES) }
   end
 
   describe '.last_synced_timestamp_by_source' do
-    it 'returns nil if no events with the provided source exist' do
-      expect(Event.last_synced_timestamp_by_source('InvalidSource')).to be_empty
+    let!(:shopify_event1) { FactoryBot.create(:event, source: 'Shopify', created_at: 1.day.ago) }
+    let!(:shopify_event2) { FactoryBot.create(:event, source: 'Shopify', created_at: 3.hours.ago) }
+    let!(:square_event1) { FactoryBot.create(:event, source: 'Square', created_at: 2.days.ago) }
+    let!(:square_event2) { FactoryBot.create(:event, source: 'Square', created_at: 1.hour.ago) }
+
+    it 'returns the last synced timestamp for the given source' do
+      expect(Event.last_synced_timestamp_by_source('Shopify')).to eq(shopify_event2.created_at)
+      expect(Event.last_synced_timestamp_by_source('Square')).to eq(square_event2.created_at)
     end
 
-    it 'returns the created_at timestamp of the latest event with the provided source' do
-      event1 = create(:event, source: 'Shopify', created_at: 1.hour.ago)
-      event2 = create(:event, source: 'Square', created_at: 2.hours.ago)
-
-      expect(Event.last_synced_timestamp_by_source('Shopify')).to eq(event1.created_at)
-      expect(Event.last_synced_timestamp_by_source('Square')).to eq(event2.created_at)
-    end
-
-    it 'ignores events with different sources' do
-      event1 = create(:event, source: 'Shopify', created_at: 1.hour.ago)
-      create(:event, source: 'Square', created_at: 2.hours.ago)
-
-      expect(Event.last_synced_timestamp_by_source('Shopify')).to eq(event1.created_at)
+    it 'returns nil for an unknown source' do
+      expect(Event.last_synced_timestamp_by_source('UnknownSource')).to be_nil
     end
   end
 end

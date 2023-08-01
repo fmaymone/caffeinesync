@@ -36,6 +36,7 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods # For FactoryBot's build method
   config.include Shoulda::Matchers::ActiveModel, type: :model # For validate_presence_of, validate_inclusion_of, etc.
   config.before(:each) do
+    Sidekiq::Worker.clear_all
     # Set Sidekiq's testing mode to inline for each example (or :fake if you prefer)
     Sidekiq::Testing.inline!
   end

@@ -1,0 +1,67 @@
+# .rubocop.yml
+
+# AllCops section contains settings that apply to all cops (rules).
+# You can customize these settings as needed.
+
+# Target Ruby version (e.g., 2.7, 3.0). Adjust to your project's Ruby version.
+AllCops:
+  TargetRubyVersion: 3.0
+
+# Enabling the `AutoCorrect` setting to allow RuboCop to automatically fix some issues.
+# However, be cautious and always review the changes.
+# If you prefer to manually fix issues, you can remove this line.
+AllCops:
+  AutoCorrect: true
+
+# Exclude directories or files from being inspected by RuboCop.
+# Adjust the paths as needed.
+AllCops:
+  Exclude:
+    - 'vendor/**/*'  # Exclude vendor directory.
+    - 'db/schema.rb' # Exclude Rails database schema.
+    - 'db/migrate/**/*' # Exclude Rails database migrations.
+
+# Specific cop settings.
+# You can enable/disable specific cops and adjust their configuration.
+# Here are some examples:
+
+# Enabling/Disabling cops:
+# Lint/UnneededCopDisableDirective:
+#   Enabled: false  # Disable the cop that warns about unnecessary cop disable comments.
+
+# Naming/FileName:
+#   Enabled: false  # Disable the cop that checks for correct file names.
+
+# Naming/VariableName:
+#   Exclude:
+#     - 'my_variable' # Exclude 'my_variable' from being checked.
+
+# Metrics/LineLength:
+#   Max: 120        # Adjust the maximum line length (default is 80).
+
+# Style/Indentation:
+#   IndentationWidth: 2 # Adjust the indentation width (default is 2).
+
+# Style/StringLiterals:
+#   EnforcedStyle: double_quotes # Use double quotes for string literals.
+
+# Layout/IndentationConsistency:
+#   EnforcedStyle: rails # Use Rails-style indentation (2 spaces).
+
+# Layout/AlignParameters:
+#   EnforcedStyle: with_fixed_indentation # Align parameters with a fixed indentation.
+
+# You can find more available cops and their configurations in the official RuboCop documentation.
+
+# Example of adding custom settings for a specific cop.
+# For example, for a custom cop called MyCustomCop:
+#
+# MyCustomCop:
+#   CustomSetting: true
+#   AnotherSetting: 'some_value'
+
+# The `inherit_from` option allows you to inherit settings from another configuration file.
+# Uncomment the line below and adjust the path to the base configuration file, if needed.
+# inherit_from: .rubocop_base.yml
+Metrics/BlockLength:
+  Enabled: false

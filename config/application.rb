@@ -1,6 +1,9 @@
-require_relative "boot"
+# frozen_string_literal: true
 
-require "rails/all"
+require_relative 'boot'
+
+require 'rails/all'
+require 'dotenv/load'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -10,6 +13,14 @@ module Caffeinesync
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
+
+    # TODO: Add this to ENVs
+    # Allow requests from Webhook
+    config.hosts << '3823-189-45-89-229.ngrok-free.app'
+
+    config.autoload_paths << "#{config.root}/app/services"
+
+    config.active_job.queue_adapter = :sidekiq
 
     # Configuration for the application, engines, and railties goes here.
     #

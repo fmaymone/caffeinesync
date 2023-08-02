@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # spec/controllers/square_webhooks_controller_spec.rb
 require 'rails_helper'
 

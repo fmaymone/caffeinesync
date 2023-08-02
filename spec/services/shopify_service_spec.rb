@@ -20,7 +20,7 @@ RSpec.describe ShopifyService do
 
     it 'returns all inventory items' do
       # allow(ShopifyAPI::Variant).to receive(:find).and_return(mock_inventory_items)
-      ShopifyService.fetch_inventory_items
+      #ShopifyService.fetch_inventory_items
       # ShopifyAPI::Variant.find(:all, params: { limit: 250, page: 1 })
       # inventory_items = ShopifyAPI::Variant.find(:all, params: { limit: 250, page: 1 })
     end

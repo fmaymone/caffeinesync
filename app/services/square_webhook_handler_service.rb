@@ -56,15 +56,9 @@ class SquareWebhookHandlerService
     # Wrap the creation of new events in a database transaction for batch processing
     Event.transaction do
       objects.each do |object|
-        # Customize the payload as needed for the event
-        payload = {
-          type: @event_data['type'],
-          data: {
-            object:
-          }
-        }
         # Create a new Event record
-        Event.create!(source: 'Square', external_id: object[:id], payload:)
+        p object[:id]
+        Event.create!(source: 'Square', external_id: object[:id], payload: object)
       end
     end
   end
